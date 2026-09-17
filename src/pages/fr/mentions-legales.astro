@@ -1,0 +1,54 @@
+---
+// Mentions légales — required by French law for any public website.
+// Stub version for launch. Phase 8: replace with mum's real details
+// (full name, contact@domain.fr, non-commercial statement).
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="CherubArt — Mentions légales"
+  description="Mentions légales du site CherubArt."
+  lang="fr"
+>
+  <section class="section">
+    <div class="wrap content">
+      <h1>Mentions légales</h1>
+
+      <h2>Éditeur du site</h2>
+      <p>
+        Ce site est édité à titre personnel et non commercial.<br>
+        Les informations complètes seront ajoutées prochainement.
+      </p>
+
+      <h2>Hébergement</h2>
+      <p>
+        Ce site est hébergé par <strong>Netlify, Inc.</strong><br>
+        44 Montgomery Street, Suite 300<br>
+        San Francisco, CA 94104, États-Unis<br>
+        <a href="https://www.netlify.com" rel="noreferrer noopener" target="_blank">netlify.com</a>
+      </p>
+
+      <h2>Propriété intellectuelle</h2>
+      <p>
+        Toutes les créations (céramiques, vitraux, sculptures fil de fer) présentées sur ce site
+        sont la propriété exclusive de leur auteure. Toute reproduction, même partielle, est
+        interdite sans autorisation expresse.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        Pour toute demande, utilisez la <a href="/fr/contact">page Contact</a>.
+      </p>
+
+      <!-- TODO Phase 8: add full name, address, SIRET if applicable, DMARC email -->
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .content { max-width: 720px; }
+  h1 { font-size: clamp(1.9rem, 4vw, 2.5rem); margin-bottom: 2rem; }
+  h2 { font-size: 1.25rem; margin: 1.8rem 0 0.5rem; color: var(--accent); }
+  p  { font-size: 0.95rem; opacity: 0.85; line-height: 1.7; }
+  a  { color: var(--accent); font-weight: 600; }
+</style>

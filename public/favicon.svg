@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <circle cx="16" cy="16" r="16" fill="#b85c38"/>
+  <text x="16" y="22" text-anchor="middle"
+        font-size="17" fill="#fdf3ea"
+        font-family="Palatino, Georgia, serif"
+        font-style="italic">C</text>
+</svg>

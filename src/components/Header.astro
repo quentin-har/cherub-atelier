@@ -1,0 +1,76 @@
+---
+interface Props {
+  lang: string;
+}
+
+const { lang } = Astro.props;
+const base = `/${lang}`;
+
+const links =
+  lang === 'fr'
+    ? [
+        { href: `${base}/`,        label: 'Accueil' },
+        { href: `${base}/galerie`, label: 'Galerie' },
+        { href: `${base}/contact`, label: 'Contact' },
+      ]
+    : [
+        { href: `${base}/`,        label: 'Home' },
+        { href: `${base}/gallery`, label: 'Gallery' },
+        { href: `${base}/contact`, label: 'Contact' },
+      ];
+
+const path = Astro.url.pathname;
+// Mark a link active if the current path starts with its href
+const isActive = (href: string) =>
+  href === `${base}/` ? path === href : path.startsWith(href);
+---
+
+<header class="site-header">
+  <div class="brand-row">
+    <a href={`${base}/`} class="brand">CherubArt<span class="dot">.</span></a>
+  </div>
+  <nav class="tabs" aria-label="Navigation principale">
+    {links.map(link => (
+      <a
+        href={link.href}
+        class:list={['tab', { active: isActive(link.href) }]}
+        aria-current={isActive(link.href) ? 'page' : undefined}
+      >
+        {link.label}
+      </a>
+    ))}
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 1.6rem 1rem 1.2rem;
+    background: radial-gradient(circle at 50% -20%, #f4dcc2, var(--bg) 70%);
+  }
+  .brand {
+    font-family: var(--fhead);
+    font-size: 1.7rem;
+    letter-spacing: 0.02em;
+  }
+  .dot { color: var(--accent); }
+
+  .tabs {
+    display: flex;
+    gap: 0.25rem;
+  }
+  .tab {
+    display: block;
+    font-family: var(--fhead);
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    opacity: 0.6;
+    transition: opacity 0.2s, background 0.2s;
+  }
+  .tab:hover { opacity: 1; background: var(--soft); }
+  .tab.active { opacity: 1; background: var(--accent); color: #fff; }
+</style>

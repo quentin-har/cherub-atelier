@@ -1,0 +1,44 @@
+---
+interface Props {
+  lang: string;
+}
+const { lang } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="fbrand">CherubArt<span class="dot">.</span></div>
+  <p>
+    {lang === 'fr'
+      ? <><a href={`mailto:contact@cherubart.fr`}>contact@cherubart.fr</a></>
+      : <><a href={`mailto:contact@cherubart.fr`}>contact@cherubart.fr</a></>
+    }
+  </p>
+  <p>© {year} CherubArt — Fait main, avec soin.</p>
+  <p>
+    <a href={`/${lang}/mentions-legales`}>
+      {lang === 'fr' ? 'Mentions légales' : 'Legal notice'}
+    </a>
+  </p>
+</footer>
+
+<style>
+  .site-footer {
+    text-align: center;
+    padding: 2.8rem 1rem;
+    border-top: 1px solid var(--border);
+    background: var(--foot-bg);
+  }
+  .fbrand {
+    font-family: var(--fhead);
+    font-size: 1.35rem;
+    margin-bottom: 0.4rem;
+  }
+  .dot { color: var(--accent); }
+  .site-footer p {
+    font-size: 0.85rem;
+    opacity: 0.7;
+    margin-top: 0.45rem;
+  }
+  .site-footer a { color: var(--accent); font-weight: 600; }
+</style>

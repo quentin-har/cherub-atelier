@@ -1,0 +1,221 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArtworkCard from '../../components/ArtworkCard.astro';
+import { sanityClient } from '../../lib/sanity';
+import { allArtworksQuery } from '../../lib/queries';
+
+// Fetch a 3-piece preview from Sanity.
+// Returns [] when Sanity is not yet configured (Phase 2/3 — expected).
+interface Artwork {
+  _id: string;
+  title_fr: string;
+  category: 'ceramique' | 'vitrail' | 'fil';
+  description_fr?: string;
+  imageUrl?: string;
+  price_indication?: string;
+}
+
+let preview: Artwork[] = [];
+try {
+  const all: Artwork[] = await sanityClient.fetch(allArtworksQuery);
+  preview = all.slice(0, 3);
+} catch {
+  // Sanity not configured yet — Phase 4 will resolve this
+}
+---
+
+<BaseLayout title="CherubArt — Accueil" lang="fr">
+
+  <!-- ── Hero ── -->
+  <section class="hero">
+    <p class="eyebrow">Atelier d'art fait main</p>
+    <h1>Jouer avec <em>les matières</em>,<br>les couleurs et la lumière</h1>
+    <p class="hero-sub">
+      Céramique, Vitrail et Fil de Fer.<br>
+      Chaque pièce de CherubArt est unique, façonnée à la main.
+    </p>
+    <div class="btn-row center">
+      <a class="btn" href="/fr/galerie">Voir la galerie</a>
+      <a class="btn ghost" href="/fr/contact">Me contacter</a>
+    </div>
+  </section>
+
+  <!-- ── Trois savoir-faire ── -->
+  <section class="section wrap center">
+    <p class="eyebrow">Trois savoir-faire</p>
+    <h2 class="stitle">Une matière, un geste, une pièce</h2>
+    <div class="cards3">
+      <article class="ccard">
+        <div class="art-placeholder art-ceramique"></div>
+        <div class="cb"><h3>Céramique</h3><p>Sculptures et poteries façonnées à la main — femmes, animaux, fleurs — émaillées en grès ou faïence.</p></div>
+      </article>
+      <article class="ccard">
+        <div class="art-placeholder art-vitrail"></div>
+        <div class="cb"><h3>Vitrail</h3><p>Panneaux et suspensions en verre coloré, assemblés au cuivre (Tiffany) ou au plomb traditionnel.</p></div>
+      </article>
+      <article class="ccard">
+        <div class="art-placeholder art-fil"></div>
+        <div class="cb"><h3>Fil de Fer</h3><p>Silhouettes et sculptures aériennes façonnées à partir de fil de fer recuit.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ── Comment naît une pièce ── -->
+  <section class="section steps-section">
+    <div class="wrap center">
+      <p class="eyebrow">L'atelier</p>
+      <h2 class="stitle">Comment naît une pièce</h2>
+      <div class="grid4">
+        <div class="step"><div class="n">1</div><h3>L'idée</h3><p>Un croquis, une matière, une couleur en tête.</p></div>
+        <div class="step"><div class="n">2</div><h3>Le façonnage</h3><p>Sculpture de la terre, découpe du verre, courbure du fil.</p></div>
+        <div class="step"><div class="n">3</div><h3>La finition</h3><p>Émaillage, cuisson, soudure, attache.</p></div>
+        <div class="step"><div class="n">4</div><h3>La signature</h3><p>Chaque pièce inspectée et signée — elle est née.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Aperçu galerie (visible once Sanity has artworks) ── -->
+  {preview.length > 0 && (
+    <section class="section wrap center">
+      <p class="eyebrow">Aperçu</p>
+      <h2 class="stitle">Quelques créations</h2>
+      <div class="preview-grid">
+        {preview.map(artwork => (
+          <ArtworkCard
+            title={artwork.title_fr}
+            category={artwork.category}
+            description={artwork.description_fr}
+            imageUrl={artwork.imageUrl}
+            price={artwork.price_indication}
+            href="/fr/galerie"
+          />
+        ))}
+      </div>
+      <div style="margin-top:1.6rem">
+        <a class="btn ghost" href="/fr/galerie">Voir toute la galerie</a>
+      </div>
+    </section>
+  )}
+
+  <!-- ── Quote ── -->
+  <section class="quote-section">
+    <blockquote>
+      «&nbsp;Jouer avec les matières, les couleurs et la lumière.&nbsp;»
+      <span class="sig">L'atelier CherubArt</span>
+    </blockquote>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section class="cta-section">
+    <p class="eyebrow" style="color:#e0a25e">Sur mesure</p>
+    <h2>Une commande personnalisée&nbsp;?</h2>
+    <p>Une couleur précise, une dimension particulière, un cadeau unique… Vero réalise aussi des pièces sur mesure.</p>
+    <a class="btn cta-btn" href="/fr/contact">Démarrer un projet</a>
+  </section>
+
+</BaseLayout>
+
+<style>
+  /* Hero */
+  .hero {
+    text-align: center;
+    padding: 2.8rem 1.4rem 3.4rem;
+    background: radial-gradient(circle at 50% 0%, #f4dcc2, var(--bg) 62%);
+  }
+  .hero h1 { font-size: clamp(2.2rem, 5.4vw, 3.7rem); margin: 0.4rem 0 1.1rem; }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero-sub { font-size: 1.12rem; max-width: 44ch; margin: 0 auto 1.8rem; opacity: 0.84; }
+
+  /* Category intro cards */
+  .cards3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 2.2rem;
+  }
+  .ccard {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .ccard:hover { transform: translateY(-5px); box-shadow: 0 16px 34px rgba(143,87,52,.2); }
+  .art-placeholder { aspect-ratio: 4/3; }
+  .ccard .cb { padding: 1.15rem 1.25rem 1.4rem; }
+  .ccard h3 { font-size: 1.3rem; margin-bottom: 0.4rem; }
+  .ccard p { font-size: 0.9rem; opacity: 0.8; }
+
+  /* Process steps */
+  .steps-section { padding: 3rem 0; }
+  .grid4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.4rem;
+    margin-top: 2rem;
+    text-align: left;
+  }
+  .step .n {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--fhead);
+    font-weight: 700; font-size: 1.05rem;
+    background: var(--soft); color: var(--accent);
+    margin-bottom: 0.8rem;
+  }
+  .step h3 { font-family: var(--fhead); font-size: 1.1rem; margin-bottom: 0.35rem; }
+  .step p  { font-size: 0.86rem; opacity: 0.8; }
+
+  /* Gallery preview */
+  .preview-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 1.8rem;
+  }
+
+  /* Quote */
+  .quote-section {
+    text-align: center;
+    background: var(--accent);
+    color: #fdf3ea;
+    padding: 3.2rem 1.4rem;
+  }
+  blockquote {
+    font-family: var(--fhead);
+    font-style: italic;
+    font-size: clamp(1.4rem, 3.2vw, 2rem);
+    max-width: 26ch;
+    margin: 0 auto;
+  }
+  .sig {
+    display: block;
+    margin-top: 1.2rem;
+    font-family: var(--fbody);
+    font-size: 0.8rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+
+  /* CTA */
+  .cta-section {
+    padding: 3.4rem 1.4rem;
+    text-align: center;
+    background: #3a2c22;
+    color: #f4e6d6;
+  }
+  .cta-section h2 { font-family: var(--fhead); font-size: clamp(1.6rem, 3.4vw, 2.2rem); margin-bottom: 0.8rem; }
+  .cta-section p { opacity: 0.85; max-width: 46ch; margin: 0 auto 1.4rem; }
+  .cta-btn { background: #e0a25e; color: #3a2c22; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .cards3, .preview-grid { grid-template-columns: repeat(2, 1fr); }
+    .grid4 { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .cards3, .preview-grid, .grid4 { grid-template-columns: 1fr; }
+  }
+</style>

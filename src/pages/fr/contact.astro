@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContactForm from '../../components/ContactForm.astro';
+---
+
+<BaseLayout title="CherubArt — Contact" lang="fr">
+  <section class="section">
+    <div class="wrap form-wrap center">
+      <p class="eyebrow">Contact</p>
+      <h1>Écrivez à CherubArt</h1>
+      <p class="sub">
+        Une question, une envie de commande sur mesure&nbsp;?<br>
+        Laissez un message, je réponds avec plaisir.
+      </p>
+      <ContactForm />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .form-wrap { max-width: 560px; margin: 0 auto; }
+  h1 { font-size: clamp(1.9rem, 4.4vw, 2.7rem); margin: 0.4rem 0; }
+  .sub { opacity: 0.84; margin-top: 0.5rem; font-size: 0.95rem; }
+</style>

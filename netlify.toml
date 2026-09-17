@@ -1,0 +1,21 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Redirect root to French homepage
+[[redirects]]
+  from = "/"
+  to = "/fr/"
+  status = 302
+  force = true
+
+# Security headers — Phase 6 will expand these significantly
+# (CSP, X-Frame-Options, Permissions-Policy, etc.)
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

@@ -1,0 +1,111 @@
+---
+// Netlify Forms contact form
+// Security features:
+//   - data-netlify="true"        → Netlify processes submissions server-side
+//   - data-netlify-honeypot      → hidden field; bots fill it, real users don't
+//   - form-name hidden input     → required for static site Netlify forms detection
+//   - required fields            → browser-side validation before submission
+// No server-side code, no database — submissions go straight to Netlify.
+---
+
+<form
+  name="contact"
+  method="POST"
+  data-netlify="true"
+  data-netlify-honeypot="bot-field"
+  class="contact-form"
+>
+  <!-- Honeypot: hidden from real users via CSS; bots fill it and get rejected -->
+  <p class="hidden-field">
+    <label>Ne pas remplir ce champ : <input name="bot-field" /></label>
+  </p>
+
+  <!-- Required by Netlify to identify the form in static output -->
+  <input type="hidden" name="form-name" value="contact" />
+
+  <div class="field">
+    <label for="cf-name">Nom <span aria-hidden="true">*</span></label>
+    <input
+      type="text"
+      id="cf-name"
+      name="name"
+      required
+      autocomplete="name"
+      placeholder="Votre nom"
+    />
+  </div>
+
+  <div class="field">
+    <label for="cf-email">Email <span aria-hidden="true">*</span></label>
+    <input
+      type="email"
+      id="cf-email"
+      name="email"
+      required
+      autocomplete="email"
+      placeholder="vous@exemple.fr"
+    />
+  </div>
+
+  <div class="field">
+    <label for="cf-message">Message <span aria-hidden="true">*</span></label>
+    <textarea
+      id="cf-message"
+      name="message"
+      required
+      rows="6"
+      placeholder="Votre message…"
+    ></textarea>
+  </div>
+
+  <button type="submit" class="btn submit-btn">Envoyer</button>
+</form>
+
+<style>
+  /* Honeypot: visually hidden but not display:none (some bots ignore display:none) */
+  .hidden-field {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .contact-form {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    text-align: left;
+    margin-top: 1.6rem;
+  }
+
+  .field { margin-bottom: 1.1rem; }
+
+  label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+  }
+
+  input, textarea {
+    width: 100%;
+    font-family: var(--fbody);
+    font-size: 1rem;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: #fff;
+    color: var(--text);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(184, 92, 56, 0.12);
+  }
+  textarea { resize: vertical; min-height: 130px; }
+
+  .submit-btn { width: 100%; margin-top: 0.4rem; }
+</style>
