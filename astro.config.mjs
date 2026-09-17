@@ -2,8 +2,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  // TODO (Phase 2 gate): replace with your actual Netlify URL once known
-  site: 'https://placeholder.netlify.app',
+  site: 'https://cherub-atelier.netlify.app',
 
   integrations: [sitemap()],
 
