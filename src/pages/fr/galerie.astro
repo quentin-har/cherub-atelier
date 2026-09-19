@@ -7,7 +7,8 @@ import { allArtworksQuery } from '../../lib/queries';
 interface Artwork {
   _id: string;
   title_fr: string;
-  category: 'ceramique' | 'vitrail' | 'fil';
+  slug?: string;
+  category: 'pottery' | 'stained-glass' | 'wire-sculpture';
   description_fr?: string;
   imageUrl?: string;
   price_indication?: string;
@@ -39,9 +40,9 @@ try {
         <!-- Filter chips -->
         <div class="filters" role="group" aria-label="Filtrer par catégorie">
           <button class="chip active" data-filter="all">Tout</button>
-          <button class="chip" data-filter="ceramique">Céramique</button>
-          <button class="chip" data-filter="vitrail">Vitrail</button>
-          <button class="chip" data-filter="fil">Fil de Fer</button>
+          <button class="chip" data-filter="pottery">Céramique</button>
+          <button class="chip" data-filter="stained-glass">Vitrail</button>
+          <button class="chip" data-filter="wire-sculpture">Fil de Fer</button>
         </div>
 
         <!-- Artwork grid -->
@@ -53,6 +54,7 @@ try {
               description={artwork.description_fr}
               imageUrl={artwork.imageUrl}
               price={artwork.price_indication}
+              href={`/fr/galerie/${artwork.slug ?? artwork._id}`}
             />
           ))}
         </div>

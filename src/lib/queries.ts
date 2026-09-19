@@ -8,6 +8,7 @@ export const allArtworksQuery = `
     _id,
     title_fr,
     title_en,
+    "slug": slug.current,
     category,
     description_fr,
     description_en,
@@ -28,6 +29,7 @@ export const artworksByCategoryQuery = `
     _id,
     title_fr,
     title_en,
+    "slug": slug.current,
     category,
     description_fr,
     description_en,
@@ -39,4 +41,23 @@ export const artworksByCategoryQuery = `
 `;
 
 // Call it like:
-//   sanityClient.fetch(artworksByCategoryQuery, { category: 'poterie' })
+//   sanityClient.fetch(artworksByCategoryQuery, { category: 'pottery' })
+
+// A single artwork by slug — used to build the detail page route.
+// Falls back to matching on _id so an artwork published before the slug
+// field existed still gets a working (if less pretty) detail page.
+export const artworkBySlugOrIdQuery = `
+  *[_type == "artwork" && (slug.current == $slug || _id == $slug)][0] {
+    _id,
+    title_fr,
+    title_en,
+    "slug": slug.current,
+    category,
+    description_fr,
+    description_en,
+    "imageUrl": image.asset->url,
+    available,
+    price_indication,
+    date_created
+  }
+`;

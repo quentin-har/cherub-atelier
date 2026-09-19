@@ -3,7 +3,7 @@
 // When imageUrl is provided: shows a real photo from Sanity CDN.
 // When not provided: shows a colour-tinted placeholder (category-based).
 
-type Category = 'ceramique' | 'vitrail' | 'fil';
+type Category = 'pottery' | 'stained-glass' | 'wire-sculpture';
 
 interface Props {
   title: string;
@@ -26,16 +26,16 @@ const {
 } = Astro.props;
 
 const categoryLabels: Record<Category, string> = {
-  ceramique: 'Céramique',
-  vitrail:   'Vitrail',
-  fil:       'Fil de Fer',
+  pottery:         'Céramique',
+  'stained-glass': 'Vitrail',
+  'wire-sculpture':'Fil de Fer',
 };
 
 // Sanity CDN image URL with width + auto WebP conversion
 const srcUrl = imageUrl ? `${imageUrl}?w=600&h=450&fit=crop&auto=format` : null;
 ---
 
-<article class="card">
+<article class="card" data-cat={category}>
   {srcUrl ? (
     <a href={href} class="art-link" tabindex="-1" aria-hidden="true">
       <div class="art-photo">
@@ -78,10 +78,10 @@ const srcUrl = imageUrl ? `${imageUrl}?w=600&h=450&fit=crop&auto=format` : null;
   .card:hover .art-photo img { transform: scale(1.05); }
 
   /* Category placeholder */
-  .art-placeholder       { aspect-ratio: 4/3; }
-  .art-ceramique         { background: linear-gradient(140deg, #fde0c8, #f5cba8); }
-  .art-vitrail           { background: linear-gradient(140deg, #d4eaf8, #b8d8f0); }
-  .art-fil               { background: linear-gradient(140deg, #e8e8f0, #d8d8e8); }
+  .art-placeholder        { aspect-ratio: 4/3; }
+  .art-pottery            { background: linear-gradient(140deg, #fde0c8, #f5cba8); }
+  .art-stained-glass      { background: linear-gradient(140deg, #d4eaf8, #b8d8f0); }
+  .art-wire-sculpture     { background: linear-gradient(140deg, #e8e8f0, #d8d8e8); }
 
   /* Card body */
   .cb  { padding: 1rem 1.15rem 1.3rem; }

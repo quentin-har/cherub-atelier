@@ -1,0 +1,125 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { sanityClient } from '../../../lib/sanity';
+import { allArtworksQuery } from '../../../lib/queries';
+
+interface Artwork {
+  _id: string;
+  title_fr: string;
+  slug?: string;
+  category: 'pottery' | 'stained-glass' | 'wire-sculpture';
+  description_fr?: string;
+  imageUrl?: string;
+  price_indication?: string;
+  available?: boolean;
+}
+
+// One static page per artwork, generated at build time (no server, no
+// runtime Sanity dependency — matches the site's fully static architecture).
+// The route param is the artwork's slug, falling back to its Sanity _id for
+// any artwork published before the slug field existed.
+export async function getStaticPaths() {
+  let artworks: Artwork[] = [];
+  try {
+    artworks = await sanityClient.fetch(allArtworksQuery);
+  } catch {
+    // Sanity not configured yet — no detail pages to generate.
+  }
+
+  return artworks.map((artwork) => ({
+    params: { slug: artwork.slug ?? artwork._id },
+    props: { artwork },
+  }));
+}
+
+interface Props {
+  artwork: Artwork;
+}
+
+const { artwork } = Astro.props;
+
+const categoryLabels: Record<Artwork['category'], string> = {
+  pottery: 'Céramique',
+  'stained-glass': 'Vitrail',
+  'wire-sculpture': 'Fil de Fer',
+};
+
+// Full, uncropped image for the detail view (gallery cards crop to 4:3;
+// here we show the whole piece, capped at a sensible max width).
+const fullImageUrl = artwork.imageUrl
+  ? `${artwork.imageUrl}?w=1400&fit=max&auto=format`
+  : null;
+---
+
+<BaseLayout title={`Cherub Atelier — ${artwork.title_fr}`} lang="fr">
+  <section class="section wrap">
+    <a class="back" href="/fr/galerie">&larr; Retour à la galerie</a>
+
+    <div class="detail">
+      <div class="detail-media">
+        {fullImageUrl ? (
+          <img src={fullImageUrl} alt={artwork.title_fr} loading="eager" decoding="async" />
+        ) : (
+          <div class={`art-placeholder art-${artwork.category}`}></div>
+        )}
+      </div>
+
+      <div class="detail-info">
+        <div class="badges">
+          <span class="badge">{categoryLabels[artwork.category]}</span>
+          {artwork.available === false && <span class="badge unavailable">Déjà vendue</span>}
+        </div>
+        <h1>{artwork.title_fr}</h1>
+        {artwork.description_fr && <p class="desc">{artwork.description_fr}</p>}
+        {artwork.price_indication && <div class="price">{artwork.price_indication}</div>}
+
+        <div class="btn-row" style="margin-top:1.6rem">
+          <a class="btn" href="/fr/contact">Me contacter à propos de cette pièce</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .back {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 1.8rem;
+  }
+  .back:hover { text-decoration: underline; }
+
+  .detail {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 2.4rem;
+    align-items: start;
+  }
+
+  .detail-media {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .detail-media img { width: 100%; height: auto; display: block; }
+  .detail-media .art-placeholder { aspect-ratio: 4/3; }
+  .art-pottery        { background: linear-gradient(140deg, #fde0c8, #f5cba8); }
+  .art-stained-glass  { background: linear-gradient(140deg, #d4eaf8, #b8d8f0); }
+  .art-wire-sculpture { background: linear-gradient(140deg, #e8e8f0, #d8d8e8); }
+
+  .detail-info h1 {
+    font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+    margin: 0.4rem 0 0.9rem;
+  }
+  .badges { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .badge.unavailable { background: var(--border); color: var(--text); }
+  .desc { opacity: 0.85; margin-bottom: 1rem; white-space: pre-line; }
+  .price { font-size: 1.05rem; font-weight: 600; opacity: 0.75; }
+
+  @media (max-width: 800px) {
+    .detail { grid-template-columns: 1fr; }
+  }
+</style>

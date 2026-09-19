@@ -9,7 +9,8 @@ import { allArtworksQuery } from '../../lib/queries';
 interface Artwork {
   _id: string;
   title_fr: string;
-  category: 'ceramique' | 'vitrail' | 'fil';
+  slug?: string;
+  category: 'pottery' | 'stained-glass' | 'wire-sculpture';
   description_fr?: string;
   imageUrl?: string;
   price_indication?: string;
@@ -87,7 +88,7 @@ try {
             description={artwork.description_fr}
             imageUrl={artwork.imageUrl}
             price={artwork.price_indication}
-            href="/fr/galerie"
+            href={`/fr/galerie/${artwork.slug ?? artwork._id}`}
           />
         ))}
       </div>
