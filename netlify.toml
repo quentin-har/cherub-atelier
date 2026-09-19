@@ -12,10 +12,36 @@
   status = 302
   force = true
 
-# Security headers — Phase 6 will expand these significantly
-# (CSP, X-Frame-Options, Permissions-Policy, etc.)
+# Security headers — Phase 6
+#
+# CSP built from a full source audit (2026-09-19), not a generic template:
+#   - script-src 'self': the only client script is the gallery filter
+#     (src/pages/fr/galerie.astro), a bare <script> Astro bundles to an
+#     external hashed file — no inline scripts, no third-party JS anywhere.
+#   - style-src 'self': all CSS is scoped <style> blocks (compiled to
+#     external stylesheets) or src/styles/global.css. The three inline
+#     style="" attributes that existed on 2026-09-19 were moved to CSS
+#     classes for this reason — do not reintroduce style="" on new markup,
+#     or this directive will need 'unsafe-inline' and the CSP gets weaker.
+#   - img-src: 'self' + data: (placeholder/background assets) +
+#     cdn.sanity.io (artwork photos, the only external host the site uses).
+#   - connect-src 'self': all Sanity queries (sanityClient.fetch) run in
+#     Astro frontmatter at BUILD time in Node, never in the browser — the
+#     shipped site makes no client-side network calls, so cdn.sanity.io
+#     does not need to be here. If a future feature adds a client-side
+#     fetch to Sanity or anywhere else, add that origin here deliberately.
+#   - form-action 'self': the contact form posts to the same origin
+#     (Netlify Forms intercepts it server-side).
+#   - default-src 'none': nothing is allowed unless explicitly listed
+#     above/below — the site uses no manifest, worker, iframe, media, or
+#     font files beyond system fonts, so none of those directives are
+#     needed yet.
 [[headers]]
   for = "/*"
   [headers.values]
+    Content-Security-Policy = "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: https://cdn.sanity.io; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+    X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
